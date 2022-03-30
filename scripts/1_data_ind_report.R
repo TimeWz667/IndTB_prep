@@ -4,7 +4,7 @@ library(tidyverse)
 load(here::here("data_raw", "report.rdata"))
 
 
-d_report <- report %>% 
+d_report <- raw_report %>% 
   mutate(
     Amp_Private = (17 / 9.3) / 1.5, # from drug sale data
     N_Case_ACF = N_Case_acf,
