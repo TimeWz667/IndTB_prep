@@ -8,21 +8,20 @@ pr_s <- 0.35
 
 
 ## Load data
-dat_pop <- dpdt::fetch_demography("ByCountry/India")
+load(here::here("data_raw", "wpp2019.rdata"))
+load(here::here("data_raw", "wup2018.rdata"))
 
-dat_wup <- readxl::read_xls("../Data/WUP/WUP2018-F21-Proportion_Urban_Annual.xls", skip = 16)
-
-
+raw_pop
 
 pop <- bind_rows(
-  dat_pop$PopN_F %>% 
+  raw_pop$PopN_F %>% 
     pivot_longer(-Time, names_to = "Age", values_to = "N") %>% 
-    left_join(dat_pop$DeaR_F %>% 
+    left_join(raw_pop$DeaR_F %>% 
                 pivot_longer(-Time, names_to = "Age", values_to = "dr")) %>% 
     mutate(Sex = "Female"),
-  dat_pop$PopN_M %>% 
+  raw_pop$PopN_M %>% 
     pivot_longer(-Time, names_to = "Age", values_to = "N") %>% 
-    left_join(dat_pop$DeaR_M %>% 
+    left_join(raw_pop$DeaR_M %>% 
                 pivot_longer(-Time, names_to = "Age", values_to = "dr")) %>% 
     mutate(Sex = "Male")
 ) %>% 
@@ -34,46 +33,63 @@ pop <- bind_rows(
     N_Pop_U = sum(N * (Age >=15)),
     R_Die = sum(N * dr) / N_Pop,
     R_Age = sum(N * (Age == 14)) / N_Pop_Y,
-    Amp = N_Pop / N_Pop_U
+    Amp_adult = N_Pop / N_Pop_U
   ) %>% 
   ungroup()
   
 
 
 ## Urban / Rural
-pr_urban <- dat_wup %>% 
-  select(Country = `Region, subregion, country or area`, `1960`:`2050`) %>% 
-  filter(Country == "India") %>% 
-  pivot_longer(-Country, names_to = "Year", values_to = "PrUrban") %>% 
+pr_ru <- raw_wup %>% 
+  mutate(
+    Year = as.numeric(Year),
+    PrUrban = PrUrban / 100,
+    PrRural = 1 - PrUrban
+  )
+
+pr_rus <- raw_wup %>% 
   mutate(
     Year = as.numeric(Year),
     PrUrban = PrUrban / 100,
     PrSlum = PrUrban * pr_s,
-    PrUrban = PrUrban - PrSlum
+    PrUrban = PrUrban - PrSlum,
+    PrRural = 1 - PrUrban - PrSlum
   )
-
 
 
 ## Output
 
 d_pop_all <- pop %>% 
   mutate(Tag = "All", Country = "India") %>% 
-  select(Year, Country, Tag, N_Pop, N_Pop_Y, N_Pop_U, R_Die, R_Age, Amp)
+  select(Year, Country, Tag, N_Pop, N_Pop_Y, N_Pop_U, R_Die, R_Age, Amp_adult)
 
 
-d_pop_rus <- pop %>% inner_join(pr_urban) %>% 
+d_pop_ru <- pop %>% inner_join(pr_ru) %>% 
   mutate(
-    N_Pop_Urban = N_Pop * PrUrban,
-    N_Pop_Slum = N_Pop * PrSlum,
-    N_Pop_Rural = N_Pop - N_Pop_Urban - N_Pop_Slum
+    N_Pop_Rural = N_Pop * PrRural,
+    N_Pop_Urban = N_Pop * PrUrban
   ) %>% 
-  select(Year, Country, R_Die, R_Age, N_Pop_Rural, N_Pop_Urban, N_Pop_Slum, Amp) %>% 
+  select(Year, Country, R_Die, R_Age, N_Pop_Rural, N_Pop_Urban, Amp_adult) %>% 
+  pivot_longer(c(N_Pop_Urban, N_Pop_Rural), values_to = "N_Pop") %>% 
+  extract(name, "Tag", "N_Pop_(\\w+)") %>% 
+  select(Year, Country, Tag, N_Pop, R_Die, R_Age, Amp_adult)
+
+
+d_pop_rus <- pop %>% inner_join(pr_rus) %>% 
+  mutate(
+    N_Pop_Rural = N_Pop * PrRural,
+    N_Pop_Urban = N_Pop * PrUrban,
+    N_Pop_Slum = N_Pop * PrSlum
+  ) %>% 
+  select(Year, Country, R_Die, R_Age, N_Pop_Rural, N_Pop_Urban, N_Pop_Slum, Amp_adult) %>% 
   pivot_longer(c(N_Pop_Urban, N_Pop_Rural, N_Pop_Slum), values_to = "N_Pop") %>% 
   extract(name, "Tag", "N_Pop_(\\w+)") %>% 
-  select(Year, Country, Tag, N_Pop, R_Die, R_Age, Amp)
+  select(Year, Country, Tag, N_Pop, R_Die, R_Age, Amp_adult)
+
+
+
   
   
 save(d_pop_all, file = here::here("data", "d_pop_all.rdata"))
+save(d_pop_ru, file = here::here("data", "d_pop_ru.rdata"))
 save(d_pop_rus, file = here::here("data", "d_pop_rus.rdata"))
-  
-  

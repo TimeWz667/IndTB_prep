@@ -1,10 +1,11 @@
 library(tidyverse)
 
 
+load(here::here("data_raw", "who_burden.rdata"))
+load(here::here("data_raw", "who_burden_age_sex.rdata"))
 
-d_burden <- read_csv("../Data/WHO/TB_burden_countries.csv") %>% 
-  filter(iso3 == "IND") %>% 
-  filter(year >= 2014) %>% 
+
+d_burden <- raw_who_burden %>% 
   mutate(
     Inc_M = e_inc_100k * 1E-5,
     Inc_L = e_inc_100k_lo * 1E-5,
@@ -16,9 +17,7 @@ d_burden <- read_csv("../Data/WHO/TB_burden_countries.csv") %>%
   select(Year = year, Country = country, starts_with("Inc"), starts_with("Mor"))
 
 
-dat_burden_as <- read_csv("../Data/WHO/TB_burden_age_sex.csv") %>% 
-  filter(iso3 == "IND") %>% 
-  filter(year >= 2014)
+dat_burden_as <- raw_who_burden_age_sex
 
 dat_burden_as %>% 
   filter(sex == "a")

@@ -2,9 +2,11 @@ library(tidyverse)
 
 
 
-d_tx <- read_csv("../Data/WHO/TB_outcomes.csv") %>% 
-  filter(iso3 == "IND") %>% 
-  filter(year >= 2014) %>% 
+load(here::here("data_raw", "who_tx.rdata"))
+
+
+
+d_tx <- raw_who_tx %>% 
   select(Year = year, 
          Country = country,
          starts_with("mdr_"),

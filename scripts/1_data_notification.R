@@ -2,12 +2,10 @@ library(tidyverse)
 
 
 ## Load data
-noti_who <- read_csv("../Data/WHO/TB_notifications.csv") %>% 
-  filter(year >= 2014) %>% 
-  filter(iso3 == "IND")
+load(here::here("data_raw", "who_cases.rdata"))
 
 
-cases <- noti_who %>% 
+cases <- raw_who_cases %>% 
   select(Country = country, Year = year, matches("newrel_(f|m)014"), matches("newrel_(f|m)15plus")) %>% 
   pivot_longer(-c(Country, Year), values_to = "Case") %>% 
   extract(name, c("Sex", "Agp"), "newrel_(\\w)(\\S+)") %>% 
@@ -15,11 +13,11 @@ cases <- noti_who %>%
          Agp = ifelse(Agp == "014", "[0,15)", "[15,Inf)"))
 
 
-mdr <- noti_who %>% 
+mdr <- raw_who_cases %>% 
   select(Country = country, Year = year, MDR = conf_rrmdr)
   
 
-amp <- noti_who %>% 
+amp <- raw_who_cases %>% 
   select(Country = country, Year = year, matches("newrel_(f|m)014"), matches("newrel_(f|m)15plus"), new_ep) %>% 
   mutate(
     case_all = rowSums(across(starts_with("newrel"))),
