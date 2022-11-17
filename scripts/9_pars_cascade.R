@@ -44,7 +44,7 @@ pars_cascade_all <- local({
       filter(Tag == "All") %>% 
       mutate(prev = N_Prev / N_Subject) %>% 
       (function(df) { as.list(setNames(df$prev, df$State))}) (),
-    Pop = d_pop_ru %>% 
+    Pop = d_pop_all %>% 
       filter(Year == year0) %>% 
       (function(df) { as.list(setNames(df$N_Pop, df$Tag))}) (),
     Tx = tx

@@ -15,9 +15,12 @@ pars_demo_all <- local({
   yrs <- 1970 + 1:length(gr) - 1
   
   list(
-    N = d_pop_rus %>% filter(Year %in% yrs) %>% pull(N_Pop),
+    N = d_pop_all %>% filter(Year %in% yrs) %>% pull(N_Pop),
+    N_Y = d_pop_all %>% filter(Year %in% yrs) %>% pull(N_Pop_Y),
+    N_U = d_pop_all %>% filter(Year %in% yrs) %>% pull(N_Pop_U),
     Gr = gr,
-    Dr = d_pop_rus %>% filter(Year %in% yrs) %>% pull(R_Die),
+    Dr = d_pop_all %>% filter(Year %in% yrs) %>% pull(R_Die),
+    Ar = d_pop_all %>% filter(Year %in% yrs) %>% pull(R_Age),
     Year = yrs
   )
 })
