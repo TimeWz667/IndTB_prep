@@ -13,7 +13,7 @@ raw_pop <- dpdt::fetch_demography("ByCountry/India")
 save(raw_pop, file = here::here("data_raw", "wpp2019.rdata"))
 
 
-raw_wup <- readxl::read_xls("../PublicData/WUP/WUP2018-F21-Proportion_Urban_Annual.xls", skip = 16) %>% 
+raw_wup <- readxl::read_xls("../DataPublic/WUP/WUP2018-F21-Proportion_Urban_Annual.xls", skip = 16) %>% 
   select(Country = `Region, subregion, country or area`, `1960`:`2050`) %>% 
   filter(Country == "India") %>% 
   pivot_longer(-Country, names_to = "Year", values_to = "PrUrban")
@@ -52,4 +52,28 @@ d_itr_ct <- read_csv("../DataPublic/India TB report/ITR_CT.csv")
 d_itr_tx <- read_csv("../DataPublic/India TB report/ITR_Tx.csv")
 
 save(d_itr_notif, d_itr_acf, d_itr_ct, d_itr_tx, file = here::here("data_raw", "itr.rdata"))
+
+
+
+#### TBPS 2019-2021
+files <- paste0("../DataConf/reformed/", dir("../DataConf/reformed/"))
+
+
+file.copy(files, "data_raw")
+
+
+
+d_prev_asc_region <- read_csv(here::here("data_raw", "TBPS_ASC_Region.csv"))
+save(d_prev_asc_region, file = here::here("data", "d_tbps_asc_region.rdata"))
+
+
+d_prev_asc_state <- read_csv(here::here("data_raw", "TBPS_ASC_State.csv"))
+save(d_prev_asc_state, file = here::here("data", "d_tbps_asc_state.rdata"))
+
+
+d_prev_asc_ru <- read_csv(here::here("data_raw", "TBPS_RU.csv"))
+save(d_prev_asc_ru, file = here::here("data", "d_tbps_asc_RU.rdata"))
+
+
+
 
