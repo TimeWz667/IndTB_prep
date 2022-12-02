@@ -13,7 +13,7 @@ load(here::here("data", "d_prev_adj_rus.rdata"))
 load(here::here("data", "d_burden_all.rdata"))
 load(here::here("data", "d_tx.rdata"))
 load(here::here("data", "d_cases_all.rdata"))
-load(here::here("data", "d_report.rdata"))
+load(here::here("data", "d_itr.rdata"))
 load(here::here("data", "d_arti_rus.rdata"))
 
 load(here::here("pars", "pars_demo_all.rdata"))

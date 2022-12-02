@@ -31,6 +31,16 @@ calc_mlu <- function(df, pci = 0.95) {
 }
 
 
+d_tx %>% filter(Tag == "All") %>% 
+  pivot_wider(names_from = Outcome, values_from = Count) %>% 
+  ungroup() %>% 
+  summarise(
+    across(c(N, Death, LTFU, Succ), sum)
+  ) %>% 
+  pivot_longer(-N, values_to = "X") %>% 
+  calc_mlu()
+
+
 # Validation
 
 Valid <- bind_rows(
