@@ -1,0 +1,29 @@
+State,StateGroup,Region,AmpAll,P1,P0,Pop
+India,India,India,1.026315789,312,304,1347720000
+Andhra Pradesh,Andhra_Pradesh,Southern,0.904290429,274,303,52190000
+Arunachal Pradesh,North_Eastern_States,Northeastern,0.971631206,274,282,1620000
+Assam,North_Eastern_States,Northeastern,0.971631206,274,282,34620000
+Bihar,Bihar,Eastern,0.790909091,261,330,122430000
+Chandigarh,Punjab,Northern,1.137681159,314,276,1160000
+Chhattisgarh,Chhattisgarh,Central,1.008948546,451,447,29540000
+Delhi,Delhi,Northern,1.458984375,747,512,18790000
+Gujarat,Gujarat,Western,1.007352941,137,136,68720000
+Haryana,Haryana,Northern,1.133016627,477,421,28970000
+Himachal Pradesh,HP_UK_JK,Northern,1.235294118,378,306,7430000
+Jammu & Kashmir,HP_UK_JK,Northern,1.235294118,378,306,14600000
+Jharkhand,Jharkhand,Eastern,0.822857143,288,350,38760000
+Karnataka,Karnataka,Southern,1.178294574,304,258,67690000
+Kerala,Kerala,Southern,1.15503876,149,129,34330000
+Madhya Pradesh,Madhya_Pradesh,Central,0.875324675,337,385,83060000
+Maharashtra,Maharashtra,Western,1.220858896,199,163,124140000
+Manipur,North_Eastern_States,Northeastern,0.971631206,274,282,3080000
+Meghalaya,North_Eastern_States,Northeastern,0.971631206,274,282,3590000
+Nagaland,North_Eastern_States,Northeastern,0.971631206,274,282,2070000
+Odisha,Odisha,Eastern,0.972440945,247,254,45840000
+Punjab,Punjab,Northern,1.137681159,314,276,29630000
+Rajasthan,Rajasthan,Northern,0.90376569,432,478,78660000
+Tamil Nadu,Tamil_Nadu,Southern,1.102739726,322,292,80370000
+Telangana,Telangana,Southern,1.116981132,296,265,37220000
+Uttar Pradesh,Uttar_Pradesh,Northern,0.891440501,427,479,228780000
+Uttarakhand,HP_UK_JK,Northern,1.235294118,378,306,11470000
+West Bengal,West_Bengal,Eastern,1.005617978,179,178,98960000
