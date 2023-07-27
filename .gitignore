@@ -20,7 +20,8 @@
 # RStudio files
 .Rproj.user/
 
-serve/
+serve/CHAI/
 
+scripts_legacy/
 scripts/9_*
 
