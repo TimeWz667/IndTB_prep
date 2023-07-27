@@ -7,20 +7,6 @@ dir.create(folder, showWarnings = F)
 
 
 
-
-
-d_pop <- local({
-  read_csv(here::here("data_raw", "Population.csv")) %>% 
-    filter(Sex == "Total", Year >= 2015) %>% 
-    select(Year, Location, Pop) %>% 
-    mutate(
-      Location = gsub("\\s+", "_", Location),
-      Location = gsub("&", "and", Location)
-    ) %>% 
-    rename(State = Location)
-})
-
-
 d_prev <- local({
   load(here::here("data", "d_tbps_asc_state.rdata"))
   d_prev_asc_state
