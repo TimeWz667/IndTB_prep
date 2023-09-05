@@ -70,7 +70,9 @@ t_prev_region <- d_prev_asc_region %>%
     S_PrCSIPub = S_PrevUt,
     M_PrCSIPub = Pr_Pub_CSI,
     S_PrTxiPub = N_OnATT_Pub + N_OnATT_Pri,
-    M_PrTxiPub = Pr_Pub_TB
+    M_PrTxiPub = Pr_Pub_TB,
+    S_PrPastPub = N_Past_Pub + N_Past_Pri,
+    M_PrPastPub = Pr_Pub_Past
   ) %>% 
   select(Region, Year, starts_with(c("S_", "M_"))) %>% 
   pivot_longer(starts_with(c("S_", "M_"))) %>% 
@@ -108,6 +110,7 @@ t_txi <- d_itr_notif %>%
   ) %>% 
   separate(name, c("Index", "Tag"), "_") %>% 
   select(Year, Region, Index, Tag, N, M) %>% 
+  filter(M > 0) %>% 
   mutate(
     Std = sqrt(N * M * (1 - M)),
     Error = Std / sqrt(N),

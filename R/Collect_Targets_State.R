@@ -26,15 +26,31 @@ for (loc in locs) {
 }
 
 
+
+
+
 t_cases <- bind_rows(
-  d_cases %>% 
-    left_join(d_wpp %>% select(Year, N_Pop)) %>% 
+  d_itr_notif %>% 
     mutate(
-      M = N_Case / N_Pop,
-      State = "India",
-      Index = "CNR"
+      N_Noti_All = N_Noti_Pub + N_Noti_Pri
+    ) %>% 
+    left_join(d_census_state %>% select(State, N_Pop = Pop, Year)) %>% 
+    pivot_longer(-c(Year, N_Pop, State)) %>% 
+    filter(value > 0) %>% 
+    extract(name, c("Index", "Tag"), "N_(\\w+)_(\\w+)") %>% 
+    mutate(
+      Index = ifelse(Index == "Noti", "CNR", "TestR"),
+      M = value / N_Pop
     ) %>% 
     select(Year, Tag, State, Index, N = N_Pop, M),
+  # d_cases %>% 
+  #   left_join(d_wpp %>% select(Year, N_Pop)) %>% 
+  #   mutate(
+  #     M = N_Case / N_Pop,
+  #     State = "India",
+  #     Index = "CNR"
+  #   ) %>% 
+  #   select(Year, Tag, State, Index, N = N_Pop, M),
   d_cases %>% 
     mutate(State = "India", Index = "PrDR") %>% 
     select(Year, Tag, State, Index, N = N_Case, M = PrDR),
@@ -147,7 +163,9 @@ t_prev_state <- d_prev_asc_state %>%
     S_PrCSIPub = S_PrevUt,
     M_PrCSIPub = Pr_Pub_CSI,
     S_PrTxiPub = N_OnATT_Pub + N_OnATT_Pri,
-    M_PrTxiPub = Pr_Pub_TB
+    M_PrTxiPub = Pr_Pub_TB,
+    S_PrPastPub = N_Past_Pub + N_Past_Pri,
+    M_PrPastPub = Pr_Pub_Past
   ) %>% 
   select(State, Year, starts_with(c("S_", "M_"))) %>% 
   pivot_longer(starts_with(c("S_", "M_"))) %>% 
@@ -172,8 +190,8 @@ save(t_prev_state, file = here::here("data", "t_prev_state.rdata"))
 t_txi <- d_itr_notif %>% 
   left_join(state_map %>% select(State, Pop)) %>% 
   mutate(
-    TxI_Pub = N_Txi_Pub / N_Noti_Pub,
-    TxI_Pri = N_Txi_Pri / N_Noti_Pri
+    TxI_Pub = pmin(N_Txi_Pub / N_Noti_Pub, 1),
+    TxI_Pri = pmin(N_Txi_Pri / N_Noti_Pri, 1)
   ) %>% 
   pivot_longer(starts_with(c("TxI_")), values_to = "M") %>% 
   mutate(
@@ -184,6 +202,7 @@ t_txi <- d_itr_notif %>%
   ) %>% 
   separate(name, c("Index", "Tag"), "_") %>% 
   select(Year, State, Index, Tag, N, M) %>% 
+  filter(M > 0) %>% 
   mutate(
     Std = sqrt(N * M * (1 - M)),
     Error = Std / sqrt(N),

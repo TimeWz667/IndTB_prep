@@ -185,4 +185,13 @@ d_tx_dr <- d_tx %>%
 save(d_tx_dr, file = here::here("data_raw", "WHO_TxOut_dr.rdata"))
 
 
+## DR surv
+
+db <- read_csv("../DataPublic/WHO/TB_dr_surveillance_2023-08-18.csv") %>% 
+  filter(iso3 == "IND") %>% 
+  filter(year >= 2014)
+
+
+db
+
 

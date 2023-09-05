@@ -108,3 +108,31 @@ state_map <- state_map1 %>%
 
 
 save(state_map, file = here::here("data_raw", "state_map.rdata"))
+
+
+
+## State level population
+
+d_census <- read_csv("../DataPublic/Census/Projection.csv") %>% 
+  filter(Sex == "Total") %>% 
+  filter(Year >= 2015)
+
+locs <- unique(d_census$Location)
+
+
+d_census_state <- d_census %>%
+  inner_join(state_map %>% select(State, Location = State_Pop, Region)) %>% 
+  select(Year, Pop, State, Region)
+
+
+d_census_region <- d_census_state %>% 
+  group_by(Year, Region) %>% 
+  summarise(Pop = sum(Pop))
+
+
+save(d_census_state, file = here::here("data_raw", "Census_State.rdata"))
+save(d_census_region, file = here::here("data_raw", "Census_Region.rdata"))
+
+
+
+
